@@ -1,7 +1,12 @@
 from django.shortcuts import render
+from django.views import generic
+from .models import OcrDocument
 
 # Create your views here.
 
-def index(request):
-    return render(request, template_name='ocr/index.html')
-    
+class IndexView(generic.ListView):
+    template_name = 'ocr/index.html'
+    model = OcrDocument
+
+class DocView(generic.DetailView):
+    model = OcrDocument

@@ -16,3 +16,6 @@ class OcrPage(models.Model):
 
     def __str__(self):
         return f"{self.ocr_document} page {self.page_num}"
+
+    def get_page_by_line(self):
+        return [line for line in str(self.text).split('\n') if not line.strip() == '']

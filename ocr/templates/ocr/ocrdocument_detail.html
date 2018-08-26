@@ -1,0 +1,12 @@
+{% extends 'ocr/base.html' %}
+
+{% block title %}{{ ocrdocument }}{% endblock %}
+
+{% block content %}
+    {% for page in ocrdocument.ocrpage_set.all %}
+        <h2>Page {{ page.page_num }}</h2>
+        {% for line in page.get_page_by_line %}
+        <p>{{ line }}</p>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
