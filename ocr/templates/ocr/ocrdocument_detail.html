@@ -1,12 +1,25 @@
 {% extends 'ocr/base.html' %}
+{% load static %}
 
 {% block title %}{{ ocrdocument }}{% endblock %}
 
 {% block content %}
+    <div class="results">
     {% for page in ocrdocument.ocrpage_set.all %}
+        <p><a href="{% static 'ocr/pdf/' %}{{ ocrdocument.filename }}#search=%22{{ request.GET.q }}%22" target="_blank">PDF</a></p>
         <h2>Page {{ page.page_num }}</h2>
         {% for line in page.get_page_by_line %}
         <p>{{ line }}</p>
         {% endfor %}
     {% endfor %}
+    </div>
+    {% if request.GET.q %}
+    <script src="{% static 'ocr/js/mark.min.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var instance = new Mark("div.results");
+            instance.mark("{{ request.GET.q }}");
+        });
+    </script>
+    {% endif %}
 {% endblock %}

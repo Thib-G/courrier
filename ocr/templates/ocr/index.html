@@ -1,11 +1,37 @@
 {% extends 'ocr/base.html' %}
+{% load static %}
+{% load ocr_filters %}
 
 {% block title %}OCR{% endblock %}
 
 {% block content %}
+    {% if request.resolver_match.urlname != 'index' %}
+    <p><a href="{% url 'ocr:index' %}">index</a></p>
+    {% endif %}
+    <form method="">
+        <label for="q">Search</label>
+        <input type="text" name="q" {% if request.GET.q %} value="{{ request.GET.q }}"{% endif %} required>
+        <input type="submit">
+    </form>
     <ul>
         {% for doc in ocrdocument_list %}
-        <li><a href="{% url 'ocr:doc' doc.pk %}">{{ doc }}</a></li>
+        <li>
+            <a href="{% url 'ocr:doc' doc.pk %}?q={{ request.GET.q }}">{{ doc }}</a>
+            <ul class="pages">
+                {% for page in doc.prefetched_pages %}
+                <li>Page {{ page.page_num }}: {{ page.text|surround:request.GET.q }}</li>
+                {% endfor %}
+            </ul>
+        </li>
         {% endfor %}
     </ul>
+    {% if request.GET.q %}
+    <script src="{% static 'ocr/js/mark.min.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var instance = new Mark("ul.pages");
+            instance.mark("{{ request.GET.q }}");
+        });
+    </script>
+    {% endif %}
 {% endblock %}
