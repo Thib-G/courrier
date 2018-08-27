@@ -6,3 +6,5 @@ Requirement: [tesseract](https://github.com/tesseract-ocr/tesseract), [imagemagi
 - run `python manage.py makemigrations` and `python manage.py migrate`
 - copy pdf files in `./pdf/` folder and use OCR.ipynb notebook in Jupyter to generate text from pdf to database
 - run `python manage.py runserver` and go tp http://localhost:8000 to show the text version of the files.
+
+You may also need to replace all occurences of `-psm` by `--psm` in `tesseract.py` and `builders.py` from `[your_python_path]/lib/site-packages/pyocr`.
