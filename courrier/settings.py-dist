@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ocr.apps.OcrConfig'
+    'ocr.apps.OcrConfig',
+    #'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'courrier.urls'
@@ -82,7 +84,7 @@ DATABASES = {
         },
         'HOST': 'localhost',
         'PORT': '5432',
-        'NAME': 'db_django',
+        'NAME': 'DB_NAME',
         'USER': 'USER',
         'PASSWORD': 'PASSWORD',
     }
@@ -126,3 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    ("courrier_pdf", "C:/Data/Courrier/_Courrier"),
+]
+
+# 
+
+INTERNAL_IPS = ['127.0.0.1']
