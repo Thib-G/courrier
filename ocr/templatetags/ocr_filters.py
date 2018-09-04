@@ -1,22 +1,24 @@
 import re
+import shlex
 from django import template
+
+import logging
 
 register = template.Library()
 
-def surround(text, q, n=5):
-    result = '... '
-    for word in q.split():
-        result += search_text(text, word, n) + ' ... '
+
+def search_text(text, target, numchars):
+    pattern = re.compile(f".{{,{numchars}}}{target}{{,{numchars}}}", re.UNICODE|re.IGNORECASE|re.DOTALL)
+    result = re.search(pattern, text)
+    if result:
+        return result.group()
+    return f"{target} not found in text;"
+
+def surround(text, q, numchars=80):
+    result = ' [...] '
+    for word in shlex.split(q):
+        result += search_text(text, word, numchars) + ' [...] '
     return result
 
-def search_text(text, target, n):
-    '''Searches for text, and retrieves n words either side of the text, which are retuned seperatly'''
-    # https://stackoverflow.com/questions/17645701/extract-words-surrounding-a-search-word
-    word = r"\W*([\w]+)"
-    try:
-        groups = re.search(r'{}\W*({}){}'.format(word*n,target,word*n), text, re.IGNORECASE).groups()
-        return f"{' '.join(groups[:n])} {groups[n]} {' '.join(groups[n+1:])}"
-    except AttributeError:
-        return f"ERROR, word \"{target}\" not found in text \"{text}\""
 
 register.filter('surround', surround)

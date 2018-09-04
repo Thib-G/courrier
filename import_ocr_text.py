@@ -15,7 +15,7 @@ django.setup()
 
 from ocr.models import OcrDocument, OcrPage
 
-path = Path('C:/Data/Courrier/_Courrier')
+path = Path('T:/_Courrier_ocr')
 os.chdir(path)
 
 print('Searching files')

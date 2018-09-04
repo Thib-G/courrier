@@ -1,25 +1,31 @@
-{% extends 'ocr/base.html' %}
 {% load static %}
-
-{% block title %}{{ ocrdocument }}{% endblock %}
-
-{% block content %}
-    <div class="results">
-    {% for page in ocrdocument.ocrpage_set.all %}
-        <p><a href="{% static 'ocr/pdf/' %}{{ ocrdocument.filename }}#search=%22{{ request.GET.q }}%22" target="_blank">PDF</a></p>
-        <h2>Page {{ page.page_num }}</h2>
-        {% for line in page.get_page_by_line %}
-        <p>{{ line }}</p>
-        {% endfor %}
-    {% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+        .pdf {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <title>{{ ocrdocument.filename }}</title>
+</head>
+<body>
+    <div class="pdf">
+        <object data="{% static 'courrier_pdf/' %}{{ ocrdocument.dirname }}/{{ ocrdocument.filename }}{% if request.GET.q %}#search=%22{{ request.GET.q }}%22{% endif %}" type="application/pdf" width="100%" height="100%">
+            <p>This browser does not support PDFs. Please download the PDF to view it: 
+                <a href="{% static 'courrier_pdf/' %}{{ ocrdocument.dirname }}/{{ ocrdocument.filename }}{% if request.GET.q %}#search=%22{{ request.GET.q }}%22{% endif %}">Download PDF</a>.</p>
+        </object>           
     </div>
-    {% if request.GET.q %}
-    <script src="{% static 'ocr/js/mark.min.js' %}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var instance = new Mark("div.results");
-            instance.mark("{{ request.GET.q }}");
-        });
-    </script>
-    {% endif %}
-{% endblock %}
+</body>
+</html>
+
+  

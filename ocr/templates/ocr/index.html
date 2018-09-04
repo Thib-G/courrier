@@ -5,7 +5,7 @@
 {% block title %}OCR{% endblock %}
 
 {% block content %}
-    {% if request.resolver_match.urlname != 'index' %}
+    {% if request.GET.q %}
     <p><a href="{% url 'ocr:index' %}">index</a></p>
     {% endif %}
     <form method="">
@@ -16,7 +16,8 @@
     <ul>
         {% for doc in ocrdocument_list %}
         <li>
-            <a href="{% url 'ocr:doc' doc.pk %}?q={{ request.GET.q }}">{{ doc }}</a>
+            <a href="{% url 'ocr:doc' doc.pk %}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}">{{ doc }}</a>
+            <small><a href="{% static 'courrier_pdf/' %}{{ doc.dirname }}/{{ doc.filename }}{% if request.GET.q %}#search=%22{{ request.GET.q }}%22{% endif %}" target="_blank">PDF</a></small>
             <ul class="pages">
                 {% for page in doc.prefetched_pages %}
                 <li>Page {{ page.page_num }}: {{ page.text|surround:request.GET.q }}</li>
@@ -25,12 +26,14 @@
         </li>
         {% endfor %}
     </ul>
+    <div>{% include 'ocr/pagination.html' %}</div>
     {% if request.GET.q %}
-    <script src="{% static 'ocr/js/mark.min.js' %}"></script>
+    <script src="{% static 'ocr/js/libs/mark.min.js' %}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var instance = new Mark("ul.pages");
-            instance.mark("{{ request.GET.q }}");
+            var words = "{{ request.GET.q }}".replace(/['"]+/g, '');
+            instance.mark(words);
         });
     </script>
     {% endif %}
